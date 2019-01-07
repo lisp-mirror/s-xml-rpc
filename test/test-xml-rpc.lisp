@@ -33,18 +33,21 @@
   (assert (equal (xml-rpc-fault-string condition) "Fatal Error"))
   (assert (equal (xml-rpc-fault-code condition) 100)))
 
-(assert
- (xml-rpc-time-p (xml-rpc-call (encode-xml-rpc-call "currentTime.getCurrentTime")
-			       :host "time.xmlrpc.com")))
+;; TODO: time.xmlrpc.com is offline.  Find a replacement?
+;; (assert
+;;  (xml-rpc-time-p (xml-rpc-call (encode-xml-rpc-call "currentTime.getCurrentTime")
+;; 			       :host "time.xmlrpc.com")))
 
-(assert
- (equal (xml-rpc-call (encode-xml-rpc-call "examples.getStateName" 41)
-		      :host "betty.userland.com")
-	"South Dakota"))
+;; TODO: betty.userland is offline.  Find a replacement?
+;; (assert
+;;  (equal (xml-rpc-call (encode-xml-rpc-call "examples.getStateName" 41)
+;; 		      :host "betty.userland.com")
+;; 	"South Dakota"))
 
-(assert
- (equal (call-xml-rpc-server '(:host "betty.userland.com") "examples.getStateName" 41)
-	"South Dakota"))
+;; TODO: betty.userland is offline.  Find a replacement?
+;; (assert
+;;  (equal (call-xml-rpc-server '(:host "betty.userland.com") "examples.getStateName" 41)
+;; 	"South Dakota"))
 
 (assert
  (let ((server-process-name (start-xml-rpc-server :port 8080)))
