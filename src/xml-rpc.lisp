@@ -8,6 +8,7 @@
 ;;;; A Base64 encoder/decoder and a minimal XML parser are required.
 ;;;;
 ;;;; Copyright (C) 2002, 2004 Sven Van Caekenberghe, Beta Nine BVBA.
+;;;; Copyright (C) 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;;;
 ;;;; You are granted the rights to distribute and use this software
 ;;;; as governed by the terms of the Lisp Lesser General Public License
@@ -188,16 +189,16 @@
 
 (defun encode-xml-rpc-value (arg stream)
   (princ "<value>" stream)
-  (cond ((or (stringp arg) (symbolp arg))
+  (cond ((or (null arg) (eq arg t))
+	 (princ "<boolean>" stream)
+	 (princ (if arg 1 0) stream)
+	 (princ "</boolean>" stream))
+	((or (stringp arg) (symbolp arg))
 	 (princ "<string>" stream)
 	 (print-string-xml (string arg) stream)
 	 (princ "</string>" stream))
 	((integerp arg) (format stream "<int>~d</int>" arg))
 	((floatp arg) (format stream "<double>~f</double>" arg))
-	((or (null arg) (eq arg t))
-	 (princ "<boolean>" stream)
-	 (princ (if arg 1 0) stream)
-	 (princ "</boolean>" stream))
 	((and (arrayp arg)
 	      (= (array-rank arg) 1)
 	      (subtypep (array-element-type arg)

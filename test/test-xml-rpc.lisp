@@ -27,6 +27,11 @@
 	  (car (decode-xml-rpc in)))
 	'(1 2)))
 
+(assert
+ (equal (with-input-from-string (in (encode-xml-rpc-result '(nil t)))
+	  (car (decode-xml-rpc in)))
+	'(nil t)))
+
 (let ((condition (with-input-from-string (in (encode-xml-rpc-fault "Fatal Error" 100))
 		   (decode-xml-rpc in))))
   (assert (typep condition 'xml-rpc-fault))
