@@ -1,0 +1,8 @@
+/s-xml-rpc/ is a Common Lisp implementation of the XML-RPC procotol for both
+client and server.
+
+This project was originally maintained in a CVS repository by Sven Van
+Caekenberghe.  See the [[https://common-lisp.net/project/s-xml-rpc/][original homepage]] for details and documentation.
+
+In 2019, Pierre Neidhardt took over maintaince at
+https://gitlab.com/ambrevar/s-xml-rpc.
