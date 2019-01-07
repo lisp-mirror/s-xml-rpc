@@ -16,7 +16,7 @@
   :name "S-XML-RPC"
   :author "Sven Van Caekenberghe <svc@mac.com>"
   :version "7"
-  :maintainer "Sven Van Caekenberghe <svc@mac.com>, Brian Mastenbrook <>, Rudi Schlatte <>"
+  :maintainer "Sven Van Caekenberghe <>, Brian Mastenbrook <>, Rudi Schlatte <>, Pierre Neidhardt <mail@ambrevar.xyz>"
   :licence "Lesser Lisp General Public License (LLGPL)"
   :description "Common Lisp XML-RPC Package"
   :long-description "s-xml-rpc is a Common Lisp implementation of the XML-RPC procotol for both client and server"
