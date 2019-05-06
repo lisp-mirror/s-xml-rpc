@@ -491,9 +491,9 @@
                   #'(lambda (c)
                       (format-debug (or *xml-rpc-debug-stream* t)
                                     "~a call failed with ~a~%" id c)
-                      (return-from handle-xml-rpc-call
-                        ;; -32603 ---> server error. internal xml-rpc error
-                        (encode-xml-rpc-fault (format nil "~a" c) -32603)))))
+                      ;; -32603 ---> server error. internal xml-rpc error
+                      (encode-xml-rpc-fault (format nil "~a" c) -32603)
+                      (error c))))
     (let ((call (decode-xml-rpc (debug-stream in))))
       (format-debug (or *xml-rpc-debug-stream* t) "~a received call ~s~%" id call)
       (let ((result (apply *xml-rpc-call-hook*
@@ -511,13 +511,15 @@
 	       " "
 	       (lisp-implementation-version)))
 
-(defun xml-rpc-server-connection-handler (connection id agent url)
+(defun xml-rpc-server-default-error-handler (c)
+  (format-debug (or *xml-rpc-debug-stream* t)
+                "xml-rpc server connection handler failed with ~a~%" c)
+  (error c))
+
+(defun xml-rpc-server-connection-handler (connection id agent url
+                                          &optional (error-handler #'xml-rpc-server-default-error-handler))
   "Handle an incoming connection, doing both all HTTP and XML-RPC stuff"
-  (handler-bind ((error #'(lambda (c)
-			    (format-debug (or *xml-rpc-debug-stream* t)
-                                          "xml-rpc server connection handler failed with ~a~%" c)
-                            (error c)
-			    (return-from xml-rpc-server-connection-handler nil))))
+  (handler-bind ((error error-handler))
     (let ((header (read-line connection nil nil)))
       (when (null header) (error "no request from client"))
       (setf header (tokens header))
@@ -549,8 +551,11 @@
 
 (defparameter *counter* 0 "Unique ID for incoming connections")
 
-(defun start-xml-rpc-server (&key (port *xml-rpc-port*) (url *xml-rpc-url*) (agent *xml-rpc-agent*))
-  "Start an XML-RPC server in a separate process"
+(defun start-xml-rpc-server (&key (port *xml-rpc-port*) (url *xml-rpc-url*) (agent *xml-rpc-agent*)
+                               error-handler)
+  "Start an XML-RPC server in a separate process.
+When provided, ERROR-HANDLER must be a function of one argument, the condition
+that was raised during execution of the XML-RPC method on the server side."
   (start-standard-server
    :name (format nil "xml-rpc server ~a:~d" url port)
    :port port
@@ -562,6 +567,7 @@
                                           client-stream
                                           id
                                           agent
-                                          url)))))
+                                          url
+                                          error-handler)))))
 
 ;;;; eof
